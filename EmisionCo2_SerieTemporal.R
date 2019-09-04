@@ -8,6 +8,7 @@ library(RColorBrewer)
 library(viridisLite)
 library(ggsci)
 library(DT)
+library(extrafont)
 
 install_packages("readr")
 # Lectura Dataset Co2
@@ -134,67 +135,71 @@ co2_ingreso <- readr::read_csv("https://raw.githubusercontent.com/cienciadedatos
 View(co2_ingreso)
 head(co2_ingreso)
 tail(co2_ingreso)
-
-#unifico los grupos en co2_ingreso
-co2_ingreso[co2_ingreso$grupo == "Ingreso medio y bajo",1]<-"Ingreso medio-bajo"
-co2_ingreso[co2_ingreso$grupo == "Ingreso medio-altos",1]<-"Ingreso medio-alto"
-co2_ingreso$grupo <-as.factor(co2_ingreso$grupo)
-str(co2_ingreso)
-co2_ingresoSinNA <- na.omit(co2_ingreso)%>%group_by(grupo)%>%arrange(grupo)
+co2_ingresoSinNA <- na.omit(co2_ingreso)%>%filter(grupo!="Ingreso medio y bajo")%>% group_by(grupo)%>%arrange(desc(grupo))
 View(co2_ingresoSinNA)
+co2_ingresoSinNA[co2_ingresoSinNA$grupo == "Ingreso medio-altos",1]<-"Ingreso medio-alto"
 
-install.packages("ggplotly")
-library(ggplotly)
-py <- plotly()
-data_bar <- list(x =co2_ingresoSinNA$anio,
-                 y = co2_ingresoSinNA$emision_co2,
-                 type = "bar",
-                 marker = list(color = brewer.pal(6, "Paired")))
+co2_ingresoSinNA$grupo <-factor(co2_ingresoSinNA$grupo, levels = c("Ingreso alto","Ingreso medio-alto","Ingreso medio","Ingreso medio-bajo","Ingreso bajo"))
+levels( co2_ingresoSinNA$grupo) 
 
-layout_bar <- list(title = "Price of Meals", xaxis = list(title = "Meal"), yaxis = list(title = "Price ($)"))
-response <- py$plotly(data = data_bar, kwargs = list(layout = layout_bar, filename = "Your_Filename"),fileopt = "overwrite")
-  response                    
- py$ggplotly(kwargs = list(filename = "Your_Filename",
-                            fileopt = "overwrite"))
-  
-  ggplot(data = co2_ingresoSinNA,
-         aes(x = anio,
-             y = emision_co2,
-             group = grupo,
-             colour = grupo)) +
-    scale_colour_brewer(palette = "Dark2")
+co2_ingresoFinal <-co2_ingresoSinNA%>%group_by(grupo)%>%arrange(desc(grupo))
+View(co2_ingresoFinal)
+
+#reasigno lo valores de los factores
+
+#1: Ingreso Bajo celeste
+#2: Ingreso medio-bajo gris
+#3: Ingreso medio amarillo
+#4: Ingreso medio-alto  verde
+#5: Ingreso alto rojo
+
+#cómo se define un factor
+y2 <- factor(x2, levels = niveles_meses)
+y2
+
+
 #--------------------------------------------------------------------------
-
-data(iris)
+ 
 
 ggplot(co2_ingresoSinNA, aes(anio, emision_co2)) +
   geom_point(aes(color = grupo)) +
-  geom_smooth(aes(color = grupo, fill = grupo)) + 
-  scale_color_tron()+
-  scale_fill_tron()+
+  geom_smooth(aes(color = grupo, fill=grupo))+ 
+  scale_color_brewer(palette = "RdBu")+
+  scale_fill_brewer()+
+ # scale_color_tron()+
+ # scale_fill_tron()+
   theme_dark() +
-  labs (title= "Emisión de Co2 por grupo socioeconómico", subtitle="Período: 1960- 2014", x = "", y = "Toneladas métricas per cápita", 
-        caption = "Fuente: Banco Mundial - DatosdeMiercoles por Patricia Loto")+
+  labs (title= "Emisión de Co2 por nivel de ingresos para el período: 1960- 2014", subtitle="A mayor nivel de ingresos mayor emisión de Co2 per cápita", 
+        x = "", y = "Toneladas métricas per cápita", 
+caption = "Fuente: Banco Mundial - Para #DatosdeMiercoles (21/08/2019) por Patricia Loto") +
   theme(
     legend.position = "right",
     panel.background = element_rect(fill = "#2D2D2D"),
-    legend.key = element_rect(fill = "#2D2D2D"),
-    legend.title = element_blank(),
-    legend.text = element_text(colour ="Black" , size = 8),
+    legend.title = element_text("nivel"),
+    legend.spacing = unit(0.4, "cm"),
+    
+    legend.text = element_text(colour ="Black" , size = 8, hjust = 0.3),
     axis.text.x = element_text(angle = 50, vjust = 1.5, hjust=1.4),
-    plot.title = element_text(family="Courier",
-                              size=rel(1), 
+    plot.title = element_text(family="Garamond",
+                              size=rel(2), 
                               hjust = 0.5,
                               vjust=2.5,            #Para separarlo del gráfico
                               position_identity(center),   
                               face="bold",       
                               color="darkred",     #Color del título: maroon, lightblue, lightblue,darkblue, darkorange, black.
-                              lineheight=2),
+                              lineheight=1.3),
     plot.subtitle = element_text(hjust = 0.5),
-    plot.caption = element_text(color = "black", face = "bold",  hjust = 1.2, vjust=1)) +
-      #scale_size_discrete(range = c(1960,1970,1980,1990,1991,1992,1993,1994, 2014)))
-
-ggsave("emisionXgrupo.png",width = 10, height = 5, dpi = "retina")
-
+    plot.caption = element_text(color = "black", face = "bold",  hjust = 0.9, vjust=1, size = 8))+
+  scale_x_continuous(breaks =seq(1960, 2014, by = 4))
+    #ggrepel::geom_label_repel(aes(label = emision_co2), data = co2_ingresoSinNA, size = 4,
+                            #  label.size = 0)
+    #+
+    #scale_fill_discrete(breaks = c("1960","1970","1980","1990","1991","1992","1993","1994","2014"))
+    #scale_x_discrete(limits=c("1960","1970","1980","1990","1991","1992","1993","1994","2014")))
+     
+ #scale_size_discrete(range = c(1960,1970,1980,1990,1991,1992,1993,1994, 2014)))
+#
+ggsave("emisionXgrupo5.png",width = 10, height = 5, dpi = "retina")
+#Emisión de Co2 por grupo socioeconómico
 
 #------------------------------------------------------
