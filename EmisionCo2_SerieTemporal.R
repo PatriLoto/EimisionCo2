@@ -109,22 +109,7 @@ dygraph(ComparacionEmision, main = "Comparativa de la emisión de CO2 entre Per�
   dyOptions(colors = brewer.pal(n = 6, name = "RdBu"))Dark2
 #RdBu Dark2 PRGn Spectral
 
-
-dygraph(stAnual.modelo, main = "Evolución de la emisión de Co2 en Argentina") %>%
-  dyAxis("x", label="") %>%
-  dyAxis("y", label = "Toneladas métricas per cápita")%>%
-  dyOptions(colors = RColorBrewer::brewer.pal(n = 2, name = "Dark2")) %>%
-  dyHighlight(highlightSeriesOpts = list(strokeWidth = 2), highlightCircleSize = 5) %>%
-  dyAnnotation("1963-1-1", text = "A", tooltip = "Menor emisión de Co2") %>%
-  dyAnnotation("2014-1-1", text = "B", tooltip = "Mayor emisión de Co2")%>%
-  dyOptions(drawPoints = TRUE, pointSize = 1, colors =RColorBrewer::brewer.pal(n = 3, name = "RdBu"))
-
-
-
-
-
-
-
+#distribucion de la emisión de co2
 color <-col = brewer.pal(n = 3, name = "RdBu")
 boxplot(stAnual.modelo ~ cycle(stAnual.modelo), col = "maroon", main = "Distribucion de las emisiones de Co2",
         xlab = "Años",xlim(1960, 2014),
