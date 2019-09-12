@@ -124,25 +124,21 @@ co2_ingresoSinNA <- na.omit(co2_ingreso)%>%filter(grupo!="Ingreso medio y bajo")
 View(co2_ingresoSinNA)
 co2_ingresoSinNA[co2_ingresoSinNA$grupo == "Ingreso medio-altos",1]<-"Ingreso medio-alto"
 
+#reasigno el orden de los factores
+#1: Ingreso alto rojo
+#2: Ingreso medio-alto  verde
+#3: Ingreso medio amarillo
+#4: Ingreso medio-bajo gris
+#5: Ingreso Bajo celeste
 co2_ingresoSinNA$grupo <-factor(co2_ingresoSinNA$grupo, levels = c("Ingreso alto","Ingreso medio-alto","Ingreso medio","Ingreso medio-bajo","Ingreso bajo"))
 levels( co2_ingresoSinNA$grupo) 
 
 co2_ingresoFinal <-co2_ingresoSinNA%>%group_by(grupo)%>%arrange(desc(grupo))
 View(co2_ingresoFinal)
-
-#reasigno lo valores de los factores
-
-#1: Ingreso Bajo celeste
-#2: Ingreso medio-bajo gris
-#3: Ingreso medio amarillo
-#4: Ingreso medio-alto  verde
-#5: Ingreso alto rojo
-
-#cómo se define un factor
-y2 <- factor(x2, levels = niveles_meses)
-y2
-
-
+#-------------------------------------------------------------------------
+# ejemplo de cómo se define un factor
+#y2 <- factor(x2, levels = niveles_meses)
+#y2
 #--------------------------------------------------------------------------
  
 
