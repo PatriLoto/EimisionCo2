@@ -178,12 +178,9 @@ caption = "Fuente: Banco Mundial - Para #DatosdeMiercoles (21/08/2019) por Patri
   scale_x_continuous(breaks =seq(1960, 2014, by = 4))
     #ggrepel::geom_label_repel(aes(label = emision_co2), data = co2_ingresoSinNA, size = 4,
                             #  label.size = 0)
-    #+
-    #scale_fill_discrete(breaks = c("1960","1970","1980","1990","1991","1992","1993","1994","2014"))
-    #scale_x_discrete(limits=c("1960","1970","1980","1990","1991","1992","1993","1994","2014")))
      
  #scale_size_discrete(range = c(1960,1970,1980,1990,1991,1992,1993,1994, 2014)))
-#
+
 ggsave("emisionXgrupo5.png",width = 10, height = 5, dpi = "retina")
 #Emisión de Co2 por grupo socioeconómico
 
