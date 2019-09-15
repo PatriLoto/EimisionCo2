@@ -140,8 +140,6 @@ View(co2_ingresoFinal)
 #y2 <- factor(x2, levels = niveles_meses)
 #y2
 #--------------------------------------------------------------------------
- 
-
 ggplot(co2_ingresoSinNA, aes(anio, emision_co2)) +
   geom_point(aes(color = grupo)) +
   geom_smooth(aes(color = grupo, fill=grupo))+ 
